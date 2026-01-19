@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jackson/snow
+CMAKE_SOURCE_DIR = /home/jack/snow
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jackson/snow/build
+CMAKE_BINARY_DIR = /home/jack/snow/build
 
 # Include any dependencies generated for this target.
 include extern/enet/CMakeFiles/enet.dir/depend.make
@@ -70,130 +70,130 @@ include extern/enet/CMakeFiles/enet.dir/progress.make
 include extern/enet/CMakeFiles/enet.dir/flags.make
 
 extern/enet/CMakeFiles/enet.dir/callbacks.c.o: extern/enet/CMakeFiles/enet.dir/flags.make
-extern/enet/CMakeFiles/enet.dir/callbacks.c.o: /home/jackson/snow/extern/enet/callbacks.c
+extern/enet/CMakeFiles/enet.dir/callbacks.c.o: /home/jack/snow/extern/enet/callbacks.c
 extern/enet/CMakeFiles/enet.dir/callbacks.c.o: extern/enet/CMakeFiles/enet.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jackson/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object extern/enet/CMakeFiles/enet.dir/callbacks.c.o"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/callbacks.c.o -MF CMakeFiles/enet.dir/callbacks.c.o.d -o CMakeFiles/enet.dir/callbacks.c.o -c /home/jackson/snow/extern/enet/callbacks.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jack/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object extern/enet/CMakeFiles/enet.dir/callbacks.c.o"
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/callbacks.c.o -MF CMakeFiles/enet.dir/callbacks.c.o.d -o CMakeFiles/enet.dir/callbacks.c.o -c /home/jack/snow/extern/enet/callbacks.c
 
 extern/enet/CMakeFiles/enet.dir/callbacks.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/enet.dir/callbacks.c.i"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jackson/snow/extern/enet/callbacks.c > CMakeFiles/enet.dir/callbacks.c.i
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jack/snow/extern/enet/callbacks.c > CMakeFiles/enet.dir/callbacks.c.i
 
 extern/enet/CMakeFiles/enet.dir/callbacks.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/enet.dir/callbacks.c.s"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jackson/snow/extern/enet/callbacks.c -o CMakeFiles/enet.dir/callbacks.c.s
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jack/snow/extern/enet/callbacks.c -o CMakeFiles/enet.dir/callbacks.c.s
 
 extern/enet/CMakeFiles/enet.dir/compress.c.o: extern/enet/CMakeFiles/enet.dir/flags.make
-extern/enet/CMakeFiles/enet.dir/compress.c.o: /home/jackson/snow/extern/enet/compress.c
+extern/enet/CMakeFiles/enet.dir/compress.c.o: /home/jack/snow/extern/enet/compress.c
 extern/enet/CMakeFiles/enet.dir/compress.c.o: extern/enet/CMakeFiles/enet.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jackson/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object extern/enet/CMakeFiles/enet.dir/compress.c.o"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/compress.c.o -MF CMakeFiles/enet.dir/compress.c.o.d -o CMakeFiles/enet.dir/compress.c.o -c /home/jackson/snow/extern/enet/compress.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jack/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object extern/enet/CMakeFiles/enet.dir/compress.c.o"
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/compress.c.o -MF CMakeFiles/enet.dir/compress.c.o.d -o CMakeFiles/enet.dir/compress.c.o -c /home/jack/snow/extern/enet/compress.c
 
 extern/enet/CMakeFiles/enet.dir/compress.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/enet.dir/compress.c.i"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jackson/snow/extern/enet/compress.c > CMakeFiles/enet.dir/compress.c.i
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jack/snow/extern/enet/compress.c > CMakeFiles/enet.dir/compress.c.i
 
 extern/enet/CMakeFiles/enet.dir/compress.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/enet.dir/compress.c.s"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jackson/snow/extern/enet/compress.c -o CMakeFiles/enet.dir/compress.c.s
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jack/snow/extern/enet/compress.c -o CMakeFiles/enet.dir/compress.c.s
 
 extern/enet/CMakeFiles/enet.dir/host.c.o: extern/enet/CMakeFiles/enet.dir/flags.make
-extern/enet/CMakeFiles/enet.dir/host.c.o: /home/jackson/snow/extern/enet/host.c
+extern/enet/CMakeFiles/enet.dir/host.c.o: /home/jack/snow/extern/enet/host.c
 extern/enet/CMakeFiles/enet.dir/host.c.o: extern/enet/CMakeFiles/enet.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jackson/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object extern/enet/CMakeFiles/enet.dir/host.c.o"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/host.c.o -MF CMakeFiles/enet.dir/host.c.o.d -o CMakeFiles/enet.dir/host.c.o -c /home/jackson/snow/extern/enet/host.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jack/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object extern/enet/CMakeFiles/enet.dir/host.c.o"
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/host.c.o -MF CMakeFiles/enet.dir/host.c.o.d -o CMakeFiles/enet.dir/host.c.o -c /home/jack/snow/extern/enet/host.c
 
 extern/enet/CMakeFiles/enet.dir/host.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/enet.dir/host.c.i"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jackson/snow/extern/enet/host.c > CMakeFiles/enet.dir/host.c.i
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jack/snow/extern/enet/host.c > CMakeFiles/enet.dir/host.c.i
 
 extern/enet/CMakeFiles/enet.dir/host.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/enet.dir/host.c.s"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jackson/snow/extern/enet/host.c -o CMakeFiles/enet.dir/host.c.s
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jack/snow/extern/enet/host.c -o CMakeFiles/enet.dir/host.c.s
 
 extern/enet/CMakeFiles/enet.dir/list.c.o: extern/enet/CMakeFiles/enet.dir/flags.make
-extern/enet/CMakeFiles/enet.dir/list.c.o: /home/jackson/snow/extern/enet/list.c
+extern/enet/CMakeFiles/enet.dir/list.c.o: /home/jack/snow/extern/enet/list.c
 extern/enet/CMakeFiles/enet.dir/list.c.o: extern/enet/CMakeFiles/enet.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jackson/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object extern/enet/CMakeFiles/enet.dir/list.c.o"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/list.c.o -MF CMakeFiles/enet.dir/list.c.o.d -o CMakeFiles/enet.dir/list.c.o -c /home/jackson/snow/extern/enet/list.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jack/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object extern/enet/CMakeFiles/enet.dir/list.c.o"
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/list.c.o -MF CMakeFiles/enet.dir/list.c.o.d -o CMakeFiles/enet.dir/list.c.o -c /home/jack/snow/extern/enet/list.c
 
 extern/enet/CMakeFiles/enet.dir/list.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/enet.dir/list.c.i"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jackson/snow/extern/enet/list.c > CMakeFiles/enet.dir/list.c.i
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jack/snow/extern/enet/list.c > CMakeFiles/enet.dir/list.c.i
 
 extern/enet/CMakeFiles/enet.dir/list.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/enet.dir/list.c.s"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jackson/snow/extern/enet/list.c -o CMakeFiles/enet.dir/list.c.s
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jack/snow/extern/enet/list.c -o CMakeFiles/enet.dir/list.c.s
 
 extern/enet/CMakeFiles/enet.dir/packet.c.o: extern/enet/CMakeFiles/enet.dir/flags.make
-extern/enet/CMakeFiles/enet.dir/packet.c.o: /home/jackson/snow/extern/enet/packet.c
+extern/enet/CMakeFiles/enet.dir/packet.c.o: /home/jack/snow/extern/enet/packet.c
 extern/enet/CMakeFiles/enet.dir/packet.c.o: extern/enet/CMakeFiles/enet.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jackson/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object extern/enet/CMakeFiles/enet.dir/packet.c.o"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/packet.c.o -MF CMakeFiles/enet.dir/packet.c.o.d -o CMakeFiles/enet.dir/packet.c.o -c /home/jackson/snow/extern/enet/packet.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jack/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object extern/enet/CMakeFiles/enet.dir/packet.c.o"
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/packet.c.o -MF CMakeFiles/enet.dir/packet.c.o.d -o CMakeFiles/enet.dir/packet.c.o -c /home/jack/snow/extern/enet/packet.c
 
 extern/enet/CMakeFiles/enet.dir/packet.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/enet.dir/packet.c.i"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jackson/snow/extern/enet/packet.c > CMakeFiles/enet.dir/packet.c.i
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jack/snow/extern/enet/packet.c > CMakeFiles/enet.dir/packet.c.i
 
 extern/enet/CMakeFiles/enet.dir/packet.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/enet.dir/packet.c.s"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jackson/snow/extern/enet/packet.c -o CMakeFiles/enet.dir/packet.c.s
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jack/snow/extern/enet/packet.c -o CMakeFiles/enet.dir/packet.c.s
 
 extern/enet/CMakeFiles/enet.dir/peer.c.o: extern/enet/CMakeFiles/enet.dir/flags.make
-extern/enet/CMakeFiles/enet.dir/peer.c.o: /home/jackson/snow/extern/enet/peer.c
+extern/enet/CMakeFiles/enet.dir/peer.c.o: /home/jack/snow/extern/enet/peer.c
 extern/enet/CMakeFiles/enet.dir/peer.c.o: extern/enet/CMakeFiles/enet.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jackson/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object extern/enet/CMakeFiles/enet.dir/peer.c.o"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/peer.c.o -MF CMakeFiles/enet.dir/peer.c.o.d -o CMakeFiles/enet.dir/peer.c.o -c /home/jackson/snow/extern/enet/peer.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jack/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object extern/enet/CMakeFiles/enet.dir/peer.c.o"
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/peer.c.o -MF CMakeFiles/enet.dir/peer.c.o.d -o CMakeFiles/enet.dir/peer.c.o -c /home/jack/snow/extern/enet/peer.c
 
 extern/enet/CMakeFiles/enet.dir/peer.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/enet.dir/peer.c.i"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jackson/snow/extern/enet/peer.c > CMakeFiles/enet.dir/peer.c.i
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jack/snow/extern/enet/peer.c > CMakeFiles/enet.dir/peer.c.i
 
 extern/enet/CMakeFiles/enet.dir/peer.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/enet.dir/peer.c.s"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jackson/snow/extern/enet/peer.c -o CMakeFiles/enet.dir/peer.c.s
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jack/snow/extern/enet/peer.c -o CMakeFiles/enet.dir/peer.c.s
 
 extern/enet/CMakeFiles/enet.dir/protocol.c.o: extern/enet/CMakeFiles/enet.dir/flags.make
-extern/enet/CMakeFiles/enet.dir/protocol.c.o: /home/jackson/snow/extern/enet/protocol.c
+extern/enet/CMakeFiles/enet.dir/protocol.c.o: /home/jack/snow/extern/enet/protocol.c
 extern/enet/CMakeFiles/enet.dir/protocol.c.o: extern/enet/CMakeFiles/enet.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jackson/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object extern/enet/CMakeFiles/enet.dir/protocol.c.o"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/protocol.c.o -MF CMakeFiles/enet.dir/protocol.c.o.d -o CMakeFiles/enet.dir/protocol.c.o -c /home/jackson/snow/extern/enet/protocol.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jack/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object extern/enet/CMakeFiles/enet.dir/protocol.c.o"
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/protocol.c.o -MF CMakeFiles/enet.dir/protocol.c.o.d -o CMakeFiles/enet.dir/protocol.c.o -c /home/jack/snow/extern/enet/protocol.c
 
 extern/enet/CMakeFiles/enet.dir/protocol.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/enet.dir/protocol.c.i"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jackson/snow/extern/enet/protocol.c > CMakeFiles/enet.dir/protocol.c.i
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jack/snow/extern/enet/protocol.c > CMakeFiles/enet.dir/protocol.c.i
 
 extern/enet/CMakeFiles/enet.dir/protocol.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/enet.dir/protocol.c.s"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jackson/snow/extern/enet/protocol.c -o CMakeFiles/enet.dir/protocol.c.s
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jack/snow/extern/enet/protocol.c -o CMakeFiles/enet.dir/protocol.c.s
 
 extern/enet/CMakeFiles/enet.dir/unix.c.o: extern/enet/CMakeFiles/enet.dir/flags.make
-extern/enet/CMakeFiles/enet.dir/unix.c.o: /home/jackson/snow/extern/enet/unix.c
+extern/enet/CMakeFiles/enet.dir/unix.c.o: /home/jack/snow/extern/enet/unix.c
 extern/enet/CMakeFiles/enet.dir/unix.c.o: extern/enet/CMakeFiles/enet.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jackson/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object extern/enet/CMakeFiles/enet.dir/unix.c.o"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/unix.c.o -MF CMakeFiles/enet.dir/unix.c.o.d -o CMakeFiles/enet.dir/unix.c.o -c /home/jackson/snow/extern/enet/unix.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jack/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object extern/enet/CMakeFiles/enet.dir/unix.c.o"
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/unix.c.o -MF CMakeFiles/enet.dir/unix.c.o.d -o CMakeFiles/enet.dir/unix.c.o -c /home/jack/snow/extern/enet/unix.c
 
 extern/enet/CMakeFiles/enet.dir/unix.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/enet.dir/unix.c.i"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jackson/snow/extern/enet/unix.c > CMakeFiles/enet.dir/unix.c.i
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jack/snow/extern/enet/unix.c > CMakeFiles/enet.dir/unix.c.i
 
 extern/enet/CMakeFiles/enet.dir/unix.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/enet.dir/unix.c.s"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jackson/snow/extern/enet/unix.c -o CMakeFiles/enet.dir/unix.c.s
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jack/snow/extern/enet/unix.c -o CMakeFiles/enet.dir/unix.c.s
 
 extern/enet/CMakeFiles/enet.dir/win32.c.o: extern/enet/CMakeFiles/enet.dir/flags.make
-extern/enet/CMakeFiles/enet.dir/win32.c.o: /home/jackson/snow/extern/enet/win32.c
+extern/enet/CMakeFiles/enet.dir/win32.c.o: /home/jack/snow/extern/enet/win32.c
 extern/enet/CMakeFiles/enet.dir/win32.c.o: extern/enet/CMakeFiles/enet.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jackson/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object extern/enet/CMakeFiles/enet.dir/win32.c.o"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/win32.c.o -MF CMakeFiles/enet.dir/win32.c.o.d -o CMakeFiles/enet.dir/win32.c.o -c /home/jackson/snow/extern/enet/win32.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jack/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object extern/enet/CMakeFiles/enet.dir/win32.c.o"
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT extern/enet/CMakeFiles/enet.dir/win32.c.o -MF CMakeFiles/enet.dir/win32.c.o.d -o CMakeFiles/enet.dir/win32.c.o -c /home/jack/snow/extern/enet/win32.c
 
 extern/enet/CMakeFiles/enet.dir/win32.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/enet.dir/win32.c.i"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jackson/snow/extern/enet/win32.c > CMakeFiles/enet.dir/win32.c.i
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jack/snow/extern/enet/win32.c > CMakeFiles/enet.dir/win32.c.i
 
 extern/enet/CMakeFiles/enet.dir/win32.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/enet.dir/win32.c.s"
-	cd /home/jackson/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jackson/snow/extern/enet/win32.c -o CMakeFiles/enet.dir/win32.c.s
+	cd /home/jack/snow/build/extern/enet && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jack/snow/extern/enet/win32.c -o CMakeFiles/enet.dir/win32.c.s
 
 # Object files for target enet
 enet_OBJECTS = \
@@ -221,19 +221,19 @@ extern/enet/libenet.a: extern/enet/CMakeFiles/enet.dir/unix.c.o
 extern/enet/libenet.a: extern/enet/CMakeFiles/enet.dir/win32.c.o
 extern/enet/libenet.a: extern/enet/CMakeFiles/enet.dir/build.make
 extern/enet/libenet.a: extern/enet/CMakeFiles/enet.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/jackson/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking C static library libenet.a"
-	cd /home/jackson/snow/build/extern/enet && $(CMAKE_COMMAND) -P CMakeFiles/enet.dir/cmake_clean_target.cmake
-	cd /home/jackson/snow/build/extern/enet && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/enet.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/jack/snow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking C static library libenet.a"
+	cd /home/jack/snow/build/extern/enet && $(CMAKE_COMMAND) -P CMakeFiles/enet.dir/cmake_clean_target.cmake
+	cd /home/jack/snow/build/extern/enet && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/enet.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 extern/enet/CMakeFiles/enet.dir/build: extern/enet/libenet.a
 .PHONY : extern/enet/CMakeFiles/enet.dir/build
 
 extern/enet/CMakeFiles/enet.dir/clean:
-	cd /home/jackson/snow/build/extern/enet && $(CMAKE_COMMAND) -P CMakeFiles/enet.dir/cmake_clean.cmake
+	cd /home/jack/snow/build/extern/enet && $(CMAKE_COMMAND) -P CMakeFiles/enet.dir/cmake_clean.cmake
 .PHONY : extern/enet/CMakeFiles/enet.dir/clean
 
 extern/enet/CMakeFiles/enet.dir/depend:
-	cd /home/jackson/snow/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jackson/snow /home/jackson/snow/extern/enet /home/jackson/snow/build /home/jackson/snow/build/extern/enet /home/jackson/snow/build/extern/enet/CMakeFiles/enet.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/jack/snow/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jack/snow /home/jack/snow/extern/enet /home/jack/snow/build /home/jack/snow/build/extern/enet /home/jack/snow/build/extern/enet/CMakeFiles/enet.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : extern/enet/CMakeFiles/enet.dir/depend
 

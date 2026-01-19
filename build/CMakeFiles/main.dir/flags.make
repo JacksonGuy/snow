@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/jackson/snow/extern/enet/include -I/home/jackson/snow/extern/serialize
+CXX_INCLUDES = -I/home/jack/snow/extern/enet/include -I/home/jack/snow/extern/serialize
 
 CXX_FLAGS = -std=c++17
 

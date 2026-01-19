@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stddef.h>
+#include <memory>
 
 #include "core/utils.hpp"
 #include "core/serializable.hpp"
@@ -11,17 +12,18 @@ namespace snow {
             u64 type;
             u64 timestamp;
             u64 priority;
-            size_t size;
-            u8* data;
+            u64 size;
+            std::unique_ptr<u8> data;
 
             Packet();
             Packet(const Packet& packet);
-            Packet(Packet&& packet);
+            Packet(Packet&& packet) noexcept;
             Packet& operator=(const Packet& packet);
-            Packet& operator=(Packet&& packet);
+            Packet& operator=(Packet&& packet) noexcept;
             ~Packet();
 
+            u64 get_size() const noexcept;
             u8* Serialize() const override;
-            bool Deserialize(u8* data) override;
+            bool Deserialize(const u8* buffer) override;
     };
 }

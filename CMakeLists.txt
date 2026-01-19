@@ -12,12 +12,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Dependencies
 add_subdirectory(extern/enet)
 
-add_library(serialize INTERFACE)
-target_include_directories(serialize
-    INTERFACE
-    extern/serialize
-)
-
 # Main project files
 add_executable(main src/main.cpp)
 
@@ -25,7 +19,6 @@ add_executable(main src/main.cpp)
 target_link_libraries(main
     PRIVATE
         enet
-        serialize
 )
 target_include_directories(main
     PRIVATE
