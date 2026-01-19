@@ -1,0 +1,6 @@
+[submodule "extern/enet"]
+	path = extern/enet
+	url = https://github.com/lsalzman/enet.git
+[submodule "extern/serialize"]
+	path = extern/serialize
+	url = https://github.com/mas-bandwidth/serialize.git
