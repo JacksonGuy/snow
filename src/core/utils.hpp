@@ -20,7 +20,7 @@ typedef int64_t     i64;
 
 namespace snow {
     // 36 characters plus null terminator
-    constexpr u32 UUID_SIZE = 37;
+    constexpr u32 _UUID_SIZE = 37;
 
     void serialize_f32(u8* buffer, f32 value);
     f32 deserialize_f32(const u8* buffer);
