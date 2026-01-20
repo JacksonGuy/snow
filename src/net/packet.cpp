@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <cstring>
 
-#include "packet.hpp"
+#include "net/packet.hpp"
 #include "core/utils.hpp"
 
 namespace snow {
@@ -78,11 +78,22 @@ namespace snow {
     }
 
     /*
+     * Construct packet from ENet event.
+     */
+    Packet::Packet(ENetEvent* event) {
+        u8* bytes = (u8*)event->packet->data;
+        size_t size = event->packet->dataLength;
+
+        if (size <= 0) return;
+        this->Deserialize(bytes);
+    }
+
+    /*
      * Destructor.
      */
     Packet::~Packet() {}
 
-    /**
+    /*
      * Return the total size of the packet in bytes.
      */
     u64 Packet::get_size() const noexcept {
@@ -98,7 +109,7 @@ namespace snow {
         return size_total;
     }
 
-    /**
+    /*
      * Serializes the packet contents into a byte array.
      */
     u8* Packet::Serialize() const {
@@ -118,7 +129,7 @@ namespace snow {
         return buffer;
     }
 
-    /**
+    /*
      * Deserialize the given byte array into the packet object.
      * Modifies the current packet object.
      */

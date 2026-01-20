@@ -3,7 +3,10 @@
 
 #include <cassert>
 
-#include "enet/enet.h"
+#include "core/utils.hpp"
+#include "net/server.hpp"
+
+// #include "enet/enet.h"
 
 #define PORT 8080
 
@@ -57,12 +60,24 @@ void server_test() {
     }
 }
 
+typedef struct {
+    u32 something;
+} ServerState;
+
+void server_loop(ServerState* state) {
+    // Do ur shit in here.
+}
+
 int main(int argc, char* argv[]) {
-    std::cout << "Server starting..." << std::endl;
+    using namespace snow;
+    Server server(PORT);
 
-    server_test();
+    ServerState state;
 
-    std::cout << "Server shut down." << std::endl;
+    server.init();
+    server.start([&state](Server& server) {
+        server_loop(&state);
+    });
 
     return 0;
 }
