@@ -4,6 +4,7 @@
 
 #include "net/packet.hpp"
 #include "core/utils.hpp"
+#include "enet/enet.h"
 
 namespace snow {
     /*
@@ -11,9 +12,7 @@ namespace snow {
      * Data buffer is nullptr.
      */
     Packet::Packet() {
-        this->type = 0;
-        this->timestamp = 0;
-        this->priority = 0;
+        strcpy(this->uuid, Packet::default_uuid);
         this->size = 0;
         this->data = nullptr;
     }
@@ -23,9 +22,7 @@ namespace snow {
      * Copies the underlying data buffer.
      */
     Packet::Packet(const Packet& packet) {
-        this->type = packet.type;
-        this->timestamp = packet.timestamp;
-        this->priority = packet.priority;
+        strcpy(this->uuid, packet.uuid);
         this->size = packet.size;
 
         this->data = std::make_unique<u8>(this->size);
@@ -37,9 +34,7 @@ namespace snow {
      * Takes ownership of the underlying data buffer.
      */
     Packet::Packet(Packet&& packet) noexcept {
-        this->type = packet.type;
-        this->timestamp = packet.timestamp;
-        this->priority = packet.priority;
+        strcpy(this->uuid, packet.uuid);
         this->size = packet.size;
         this->data = std::move(packet.data);
     }
@@ -50,9 +45,7 @@ namespace snow {
      */
     Packet& Packet::operator=(const Packet& packet) {
         if (this != &packet) {
-            this->type = packet.type;
-            this->timestamp = packet.timestamp;
-            this->priority = packet.priority;
+            strcpy(this->uuid, packet.uuid);
             this->size = packet.size;
 
             this->data = std::make_unique<u8>(this->size);
@@ -67,9 +60,7 @@ namespace snow {
      */
     Packet& Packet::operator=(Packet&& packet) noexcept {
         if (this != &packet) {
-            this->type = packet.type;
-            this->timestamp = packet.timestamp;
-            this->priority = packet.priority;
+            strcpy(this->uuid, packet.uuid);
             this->size = packet.size;
 
             this->data = std::move(packet.data);
@@ -99,9 +90,7 @@ namespace snow {
     u64 Packet::get_size() const noexcept {
         u64 size_total = 0;
 
-        size_total += sizeof(this->type);
-        size_total += sizeof(this->timestamp);
-        size_total += sizeof(this->priority);
+        size_total += _UUID_SIZE;
         size_total += sizeof(this->size);
 
         size_total += this->size;
@@ -115,15 +104,16 @@ namespace snow {
     u8* Packet::Serialize() const {
         u64 size_total = this->get_size();
         u8* buffer = (u8*)malloc(size_total);
+        u64 offset = 0;
 
-        // Write data to buffer and move over by 8 bytes (64 bits)
-        serialize_u64(buffer, this->type);      buffer += 8;
-        serialize_u64(buffer, this->timestamp); buffer += 8;
-        serialize_u64(buffer, this->priority);  buffer += 8;
-        serialize_u64(buffer, this->size);      buffer += 8;
+        memcpy((char*)buffer, this->uuid, _UUID_SIZE);
+        offset += _UUID_SIZE;
+
+        serialize_u64(buffer + offset, this->size);
+        offset += sizeof(this->size);
 
         if (this->data != nullptr && this->size > 0) {
-            memcpy(buffer, this->data.get(), this->size);
+            memcpy(buffer + offset, this->data.get(), this->size);
         }
 
         return buffer;
@@ -136,12 +126,15 @@ namespace snow {
     bool Packet::Deserialize(const u8* buffer) {
         u64 offset = 0;
 
-        this->type = deserialize_u64(buffer + offset);        offset += 8;
-        this->timestamp = deserialize_u64(buffer + offset);   offset += 8;
-        this->priority = deserialize_u64(buffer + offset);    offset += 8;
-        this->size = deserialize_u64(buffer + offset);        offset += 8;
+        // UUID
+        memcpy(this->uuid, buffer, _UUID_SIZE);
+        offset += _UUID_SIZE;
 
-        // We free the current data stored locally
+        // Size
+        this->size = deserialize_u64(buffer + offset);
+        offset += sizeof(this->size);
+
+        // Free any data currently being stored
         if (this->data != nullptr) {
             this->data.reset();
         }
@@ -151,5 +144,31 @@ namespace snow {
         memcpy(this->data.get(), (buffer + offset), this->size);
 
         return true;
+    }
+
+    /**
+     * @brief Send a packet to a ENet destination.
+     *
+     * @param to peer the packet is sent to
+     * @param packet the packet to send
+     * @param reliable ensures packet is received by the peer
+     * @param channel channel to send packet on
+     */
+    void send_packet(ENetPeer* to, const Packet& packet, bool reliable, int channel) {
+        size_t flag = 0;
+        if (reliable) {
+            flag = ENET_PACKET_FLAG_RELIABLE;
+        }
+        else {
+            flag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
+        }
+
+        u8* bytes = packet.Serialize();
+        size_t size = packet.get_size();
+
+        ENetPacket* enet_packet = enet_packet_create(bytes, size, flag);
+        enet_peer_send(to, channel, enet_packet);
+
+        free(bytes);
     }
 }

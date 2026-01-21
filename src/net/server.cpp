@@ -3,6 +3,7 @@
 #include <mutex>
 #include <thread>
 #include <functional>
+#include <cstring>
 
 #include "enet/enet.h"
 
@@ -15,6 +16,10 @@ namespace snow {
         this->tick_rate = 20;
         this->max_clients = max_clients;
         this->host = nullptr;
+
+        this->_user_loop = nullptr;
+        this->_user_connect_callback = nullptr;
+        this->_user_disconnect_callback = nullptr;
     }
 
     /**
@@ -52,9 +57,14 @@ namespace snow {
      */
     void Server::start(
         std::function<void(Server&)> user_loop,
-        std::function<void(Server&)> connect_callback,
-        std::function<void(Server&)> disconnect_callback
+        std::function<bool(Server&, ENetEvent&)> connect_callback,
+        std::function<void(Server&, ENetEvent&)> disconnect_callback
     ) {
+        // Set user functions
+        this->_user_loop = user_loop;
+        this->_user_connect_callback = connect_callback;
+        this->_user_disconnect_callback = disconnect_callback;
+
         /*
          * t1 : Listen for packets from clients
          * t2 : Perform client handshakes
@@ -62,7 +72,7 @@ namespace snow {
          */
         std::thread t1(&Server::poll_events, this);
         std::thread t2(&Server::handle_new_connections, this);
-        std::thread t3(&Server::main_loop, this, user_loop);
+        std::thread t3(&Server::main_loop, this);
     }
 
     /*
@@ -83,7 +93,17 @@ namespace snow {
                         debug_log("New connection.");
 
                         std::lock_guard<std::mutex> lock(this->new_connections_mtx);
-                        this->new_connections.push(event);
+
+                        bool result = true;
+                        if (this->_user_connect_callback != nullptr) {
+                            result = this->_user_connect_callback(*this, event);
+                        }
+
+                        // Result value for callback determines if
+                        // we allow the client to start connecting.
+                        if (result) {
+                            this->new_connections.push(event);
+                        }
 
                         break;
                     }
@@ -95,6 +115,10 @@ namespace snow {
                         std::lock_guard<std::mutex> lock(this->messages_mtx);
 
                         Packet packet(&event);
+
+                        // Find client
+
+
                         Message msg = {
                             .event = event,
                             .packet = packet
@@ -108,6 +132,9 @@ namespace snow {
                     {
                         debug_log("Client disconnected.");
 
+                        if (this->_user_disconnect_callback != nullptr) {
+                            this->_user_disconnect_callback(*this, event);
+                        }
                         disconnect_client(event);
 
                         break;
@@ -188,7 +215,7 @@ namespace snow {
         }
     }
 
-    void Server::main_loop(std::function<void(Server&)> user_loop) {
+    void Server::main_loop() {
         const i32 tick_time = 1000.0 / this->tick_rate;
         u64 current_time = get_local_timestamp();
 
@@ -216,7 +243,24 @@ namespace snow {
 
     // TODO
     void Server::begin_client_handshake(ENetEvent& event) {
+        debug_log("Starting client handshake...");
 
+        std::lock_guard<std::mutex> lock1(this->handshake_clients_mtx);
+        std::lock_guard<std::mutex> lock2(this->client_lookup_mtx);
+
+        // Create Client object
+        ClientInfo client;
+        client.peer = event.peer;
+        client.uuid = generate_uuid();
+
+        // Add client to lists
+        this->handshake_clients.push_back(client);
+        this->client_lookup[client.uuid.data()] = event.peer;
+
+        // Send client their UUID
+        Packet uuid_packet;
+        strcpy(uuid_packet.uuid, client.uuid.c_str());
+        uuid_packet.size = 0;
     }
 
     // TODO

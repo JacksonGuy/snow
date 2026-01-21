@@ -1,6 +1,7 @@
 #pragma once
 
 #include <mutex>
+#include <unordered_map>
 #include <vector>
 #include <queue>
 #include <functional>
@@ -16,7 +17,7 @@ namespace snow {
     constexpr size_t _PING_HANDSHAKE_AMOUNT = 10;
 
     typedef struct {
-        char uuid[_UUID_SIZE];
+        std::string uuid;
         ENetPeer* peer;
 
         u64 total_ping_count;
@@ -40,12 +41,21 @@ namespace snow {
             void init();
             void start(
                 std::function<void(Server&)> user_loop,
-                std::function<void(Server&)> connect_callback,
-                std::function<void(Server&)> disconnect_callback
+                std::function<bool(Server&, ENetEvent&)> connect_callback = nullptr,
+                std::function<void(Server&, ENetEvent&)> disconnect_callback = nullptr
             );
 
         private:
             ENetHost* host;
+
+            // User function pointers
+            std::function<void(Server&)> _user_loop;
+            std::function<bool(Server&, ENetEvent&)> _user_connect_callback;
+            std::function<void(Server&, ENetEvent&)> _user_disconnect_callback;
+
+            // All clients lookup
+            std::mutex client_lookup_mtx;
+            std::unordered_map<char*, ENetPeer*> client_lookup;
 
             // Clients attempting to connect
             std::mutex new_connections_mtx;
@@ -63,9 +73,10 @@ namespace snow {
             std::mutex messages_mtx;
             std::vector<Message> messages;
 
+            // Main server methods
             void poll_events();
             void handle_new_connections();
-            void main_loop(std::function<void(Server&)> user_loop);
+            void main_loop();
             void disconnect_client(ENetEvent& event);
             void begin_client_handshake(ENetEvent& event);
             void finalize_client_handshake(ClientInfo& client);

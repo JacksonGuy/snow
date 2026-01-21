@@ -29,7 +29,7 @@ namespace snow {
     }
 
     void serialize_u64(u8* buffer, u64 value) {
-        *buffer = htonll(value);
+        *(u64*)buffer = htonll(value);
     }
 
     u64 deserialize_u64(const u8* buffer) {

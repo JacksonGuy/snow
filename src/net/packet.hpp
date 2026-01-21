@@ -11,9 +11,9 @@
 namespace snow {
     class Packet : public Serializable {
         public:
-            u64 type;
-            u64 timestamp;
-            u64 priority;
+            static constexpr char default_uuid[] = "00000000-0000-0000-0000-000000000000";
+
+            char uuid[_UUID_SIZE];
             u64 size;
             std::unique_ptr<u8> data;
 
@@ -29,4 +29,6 @@ namespace snow {
             u8* Serialize() const override;
             bool Deserialize(const u8* buffer) override;
     };
+
+    void send_packet(ENetPeer* to, const Packet& packet, bool reliable, int channel);
 }
