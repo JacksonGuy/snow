@@ -152,9 +152,9 @@ namespace snow {
      * @param to peer the packet is sent to
      * @param packet the packet to send
      * @param reliable ensures packet is received by the peer
-     * @param channel channel to send packet on
+     * @param channel channel to send packet on (0-255)
      */
-    void send_packet(ENetPeer* to, const Packet& packet, bool reliable, int channel) {
+    void send_packet(ENetPeer* to, const Packet& packet, bool reliable, u8 channel) {
         size_t flag = 0;
         if (reliable) {
             flag = ENET_PACKET_FLAG_RELIABLE;

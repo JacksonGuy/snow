@@ -12,23 +12,22 @@
 #include "net/packet.hpp"
 
 namespace snow {
-    constexpr size_t _CHANNEL_LIMIT = 2;
-    constexpr size_t _PEER_LIMIT = 512;
-    constexpr size_t _PING_HANDSHAKE_AMOUNT = 10;
-
     typedef struct {
         std::string uuid;
         ENetPeer* peer;
-
-        u64 total_ping_count;
-        u64 total_ping_sum;
-        u64 ping_average;
     } ClientInfo;
 
     typedef struct {
         ENetEvent event;
         Packet packet;
     } Message;
+
+    typedef struct {
+        Packet packet;
+        ENetPeer* dest;
+        bool reliable;
+        u8 channel;
+    } QueuePacket;
 
     class Server {
         public:
@@ -44,8 +43,13 @@ namespace snow {
                 std::function<bool(Server&, ENetEvent&)> connect_callback = nullptr,
                 std::function<void(Server&, ENetEvent&)> disconnect_callback = nullptr
             );
+            void send_packet(const Packet& packet, ENetPeer* dest, bool reliable, u8 channel);
+            void broadcast_packet(const Packet& packet, bool reliable, u8 channel);
 
         private:
+            static const u8 _CHANNEL_RELIABLE = 0;
+            static const u8 _CHANNEL_UNRELIABLE = 1;
+
             ENetHost* host;
 
             // User function pointers
@@ -53,32 +57,22 @@ namespace snow {
             std::function<bool(Server&, ENetEvent&)> _user_connect_callback;
             std::function<void(Server&, ENetEvent&)> _user_disconnect_callback;
 
-            // All clients lookup
-            std::mutex client_lookup_mtx;
+            // Client lookup
             std::unordered_map<char*, ENetPeer*> client_lookup;
 
-            // Clients attempting to connect
-            std::mutex new_connections_mtx;
-            std::queue<ENetEvent> new_connections;
-
-            // Client in the handshake process
-            std::mutex handshake_clients_mtx;
-            std::vector<ClientInfo> handshake_clients;
-
-            // Currently connected clients
-            std::mutex clients_mtx;
+            // Client list
             std::vector<ClientInfo> clients;
 
-            // Messsages from clients to server
-            std::mutex messages_mtx;
-            std::vector<Message> messages;
+            // Message between client and server
+            std::queue<Message> incoming_messages;
+            std::queue<QueuePacket> outgoing_messages;
 
-            // Main server methods
             void poll_events();
-            void handle_new_connections();
+            void handle_new_connection(ENetEvent& event);
             void main_loop();
             void disconnect_client(ENetEvent& event);
-            void begin_client_handshake(ENetEvent& event);
-            void finalize_client_handshake(ClientInfo& client);
+
+            void _send_packet_immediate(const Packet& packet, ENetPeer* dest, bool reliable, u8 channel);
+            void _broadcast_packet_immediate(const Packet& packet, bool reliable, u8 channel);
     };
 }

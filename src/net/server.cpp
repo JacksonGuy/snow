@@ -1,6 +1,5 @@
 #include <chrono>
 #include <cstdlib>
-#include <mutex>
 #include <thread>
 #include <functional>
 #include <cstring>
@@ -9,6 +8,7 @@
 
 #include "net/server.hpp"
 #include "core/utils.hpp"
+#include "net/packet.hpp"
 
 namespace snow {
     Server::Server(u16 port, u32 max_clients) {
@@ -20,6 +20,19 @@ namespace snow {
         this->_user_loop = nullptr;
         this->_user_connect_callback = nullptr;
         this->_user_disconnect_callback = nullptr;
+    }
+
+    Server::~Server() {
+        debug_log("Stopping server...");
+
+        // Disconnect clients
+        for (const ClientInfo& client : this->clients) {
+            enet_peer_disconnect(client.peer, 0);
+        }
+
+        // Destroy host instance
+        enet_host_destroy(this->host);
+        this->host = nullptr;
     }
 
     /**
@@ -38,8 +51,8 @@ namespace snow {
         address.port = this->port;
         this->host = enet_host_create(
             &address,
-            snow::_PEER_LIMIT,      // Maximum player count
-            snow::_CHANNEL_LIMIT,   // Communication channels
+            this->max_clients,      // Maximum player count
+            0,                      // Communication channels
             0,                      // Incoming bandwidth
             0                       // Outgoing bandwidth
         );
@@ -65,206 +78,213 @@ namespace snow {
         this->_user_connect_callback = connect_callback;
         this->_user_disconnect_callback = disconnect_callback;
 
-        /*
-         * t1 : Listen for packets from clients
-         * t2 : Perform client handshakes
-         * t3 : Main update loop
-         */
-        std::thread t1(&Server::poll_events, this);
-        std::thread t2(&Server::handle_new_connections, this);
-        std::thread t3(&Server::main_loop, this);
+        main_loop();
     }
 
     /*
      * Poll ENet for network events.
      */
     void Server::poll_events() {
-        const i32 tick_time = 1000.0 / this->tick_rate;
         ENetEvent event;
 
-        while (1) {
-            // timeout = tick_time
-            while (enet_host_service(this->host, &event, tick_time) > 0)
+        while (enet_host_service(this->host, &event, 0) > 0)
+        {
+            switch (event.type)
             {
-                switch (event.type)
+                case ENET_EVENT_TYPE_CONNECT:
                 {
-                    case ENET_EVENT_TYPE_CONNECT:
-                    {
-                        debug_log("New connection.");
+                    debug_log("New connection.");
 
-                        std::lock_guard<std::mutex> lock(this->new_connections_mtx);
-
-                        bool result = true;
-                        if (this->_user_connect_callback != nullptr) {
-                            result = this->_user_connect_callback(*this, event);
-                        }
-
-                        // Result value for callback determines if
-                        // we allow the client to start connecting.
-                        if (result) {
-                            this->new_connections.push(event);
-                        }
-
-                        break;
+                    bool result = true;
+                    if (this->_user_connect_callback != nullptr) {
+                        result = this->_user_connect_callback(*this, event);
                     }
 
-                    case ENET_EVENT_TYPE_RECEIVE:
-                    {
-                        debug_log("Message received.");
-
-                        std::lock_guard<std::mutex> lock(this->messages_mtx);
-
-                        Packet packet(&event);
-
-                        // Find client
-
-
-                        Message msg = {
-                            .event = event,
-                            .packet = packet
-                        };
-                        this->messages.push_back(msg);
-
-                        break;
+                    // Result value for callback determines if
+                    // we continue allowing the client to connect.
+                    if (result) {
+                        this->handle_new_connection(event);
                     }
 
-                    case ENET_EVENT_TYPE_DISCONNECT:
-                    {
-                        debug_log("Client disconnected.");
-
-                        if (this->_user_disconnect_callback != nullptr) {
-                            this->_user_disconnect_callback(*this, event);
-                        }
-                        disconnect_client(event);
-
-                        break;
-                    }
-
-                    case ENET_EVENT_TYPE_NONE:
-                    {
-                        break;
-                    }
+                    break;
                 }
 
-                enet_packet_destroy(event.packet);
+                case ENET_EVENT_TYPE_RECEIVE:
+                {
+                    debug_log("Message received.");
+
+                    Packet packet(&event);
+
+                    // Client validation check
+                    ENetPeer* peer = this->client_lookup[packet.uuid];
+                    if (peer->connectID != event.peer->connectID) {
+                        debug_error("Client sent packet with incorrect UUID");
+                        break;
+                    }
+
+                    Message msg = {
+                        .event = event,
+                        .packet = packet
+                    };
+                    this->incoming_messages.push(msg);
+
+                    break;
+                }
+
+                case ENET_EVENT_TYPE_DISCONNECT:
+                {
+                    debug_log("Client disconnected.");
+
+                    if (this->_user_disconnect_callback != nullptr) {
+                        this->_user_disconnect_callback(*this, event);
+                    }
+                    disconnect_client(event);
+
+                    break;
+                }
+
+                case ENET_EVENT_TYPE_NONE:
+                {
+                    break;
+                }
+            }
+
+            enet_packet_destroy(event.packet);
+        }
+    }
+
+    /*
+     * Finalize new client connection.
+     */
+    void Server::handle_new_connection(ENetEvent& event) {
+        // Create ClientInfo object for client
+        ClientInfo client;
+        client.peer = event.peer;
+        client.uuid = generate_uuid();
+
+        // Send client their UUID
+        Packet uuid_packet;
+        strcpy(uuid_packet.uuid, client.uuid.data());
+        _send_packet_immediate(uuid_packet, client.peer, true, Server::_CHANNEL_RELIABLE);
+
+        // Add client to server
+        this->clients.push_back(client);
+        this->client_lookup[client.uuid.data()] = client.peer;
+    }
+
+    void Server::main_loop() {
+        const i32 tick_time = 1000.0 / this->tick_rate;
+        u64 last_tick_timestamp = get_local_timestamp();
+
+        while (1) {
+            u64 time_since_last_tick = get_local_timestamp() - last_tick_timestamp;
+
+            if (time_since_last_tick < tick_time) {
+                std::this_thread::sleep_for(
+                    std::chrono::milliseconds(tick_time - time_since_last_tick)
+                );
+            }
+            else if (time_since_last_tick > tick_time) {
+                u64 behind = time_since_last_tick - tick_time;
+                debug_warn("Server ran %llu ms behind", behind);
+            }
+
+            last_tick_timestamp = get_local_timestamp();
+
+            this->poll_events();
+            this->_user_loop(*this);
+
+            // Send out all queued packets
+            while (!this->outgoing_messages.empty()) {
+                QueuePacket& message = this->outgoing_messages.front();
+
+                if (message.dest != nullptr) {
+                    _send_packet_immediate(message.packet, message.dest, message.reliable, message.channel);
+                }
+                else {
+                    _broadcast_packet_immediate(message.packet, message.reliable, message.channel);
+                }
             }
         }
     }
 
     /*
-     * Initiate handshake procedures and poll clients
-     * currently in the handshake process.
+     * Removes the client from the server client list.
      */
-    void Server::handle_new_connections() {
-        while (1) {
-            // Check for new incomming connections
-            {
-                std::lock_guard<std::mutex> lock(this->new_connections_mtx);
-
-                if (!this->new_connections.empty()) {
-                    // Temporary lock on clients list to obtain
-                    // player count estimate.
-                    size_t player_count = 0;
-                    {
-                        std::lock_guard<std::mutex> temp_lock(this->clients_mtx);
-                        player_count = this->clients.size();
-                    }
-
-                    bool server_full = player_count < this->max_clients;
-
-                    // Empty out new connections queue
-                    while (!this->new_connections.empty()) {
-                        ENetEvent& event = this->new_connections.front();
-
-                        if (server_full) {
-                            debug_warn("Server is full! Disconnecting player.");
-
-                            disconnect_client(event);
-                        }
-                        else {
-                            // Send client their UUID and some ping
-                            // packets to get a RTT estimate.
-                            begin_client_handshake(event);
-                        }
-
-                        this->new_connections.pop();
-                    }
-                }
-            }
-
-            // Handle client currently in handshake process
-            {
-                std::lock_guard<std::mutex> lock(this->handshake_clients_mtx);
-
-                auto it = this->handshake_clients.begin();
-                while (it != this->handshake_clients.end()) {
-                    ClientInfo& client = *it;
-
-                    if (client.total_ping_count >= snow::_PING_HANDSHAKE_AMOUNT) {
-                        finalize_client_handshake(client);
-                        it = this->handshake_clients.erase(it);
-                    }
-                    else {
-                        it++;
-                    }
-                }
-            }
-
-            // Sleep so we aren't holding locks for too long
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
-    }
-
-    void Server::main_loop() {
-        const i32 tick_time = 1000.0 / this->tick_rate;
-        u64 current_time = get_local_timestamp();
-
-        while (1) {
-            u64 last_tick = get_local_timestamp() - current_time;
-
-            if (last_tick < tick_time) {
-                std::this_thread::sleep_for(
-                    std::chrono::milliseconds(tick_time - last_tick)
-                );
-            }
-            else if (last_tick > tick_time) {
-                u64 behind = last_tick - tick_time;
-                debug_warn("Server ran %llu ms behind", behind);
-            }
-
-            current_time = get_local_timestamp();
-        }
-    }
-
-    // TODO
     void Server::disconnect_client(ENetEvent& event) {
-        std::lock_guard<std::mutex> lock(this->clients_mtx);
+        // Search and remove client
+        bool found = false;
+        auto it = this->clients.begin();
+        while (it != this->clients.end()) {
+            if (it->peer->connectID == event.peer->connectID) {
+                this->client_lookup.erase(it->uuid.data());
+                this->clients.erase(it);
+                return;
+            }
+        }
+
+        if (!found) {
+            debug_error("Failed to disconnect client: client doesn't exist");
+        }
     }
 
-    // TODO
-    void Server::begin_client_handshake(ENetEvent& event) {
-        debug_log("Starting client handshake...");
-
-        std::lock_guard<std::mutex> lock1(this->handshake_clients_mtx);
-        std::lock_guard<std::mutex> lock2(this->client_lookup_mtx);
-
-        // Create Client object
-        ClientInfo client;
-        client.peer = event.peer;
-        client.uuid = generate_uuid();
-
-        // Add client to lists
-        this->handshake_clients.push_back(client);
-        this->client_lookup[client.uuid.data()] = event.peer;
-
-        // Send client their UUID
-        Packet uuid_packet;
-        strcpy(uuid_packet.uuid, client.uuid.c_str());
-        uuid_packet.size = 0;
+    void Server::send_packet(const Packet& packet, ENetPeer* dest, bool reliable, u8 channel) {
+        this->outgoing_messages.emplace((QueuePacket){
+            .packet = std::move(packet),
+            .dest = dest,
+            .reliable = reliable,
+            .channel = channel,
+        });
     }
 
-    // TODO
-    void Server::finalize_client_handshake(ClientInfo& client) {
+    void Server::broadcast_packet(const Packet& packet, bool reliable, u8 channel) {
+        this->outgoing_messages.emplace((QueuePacket){
+            .packet = std::move(packet),
+            .dest = nullptr,
+            .reliable = reliable,
+            .channel = channel,
+        });
+    }
 
+    /*
+     * Send packet directly to client.
+     */
+    void Server::_send_packet_immediate(const Packet& packet, ENetPeer* dest, bool reliable, u8 channel) {
+        size_t flag = 0;
+
+        if (reliable) {
+            flag = ENET_PACKET_FLAG_RELIABLE;
+        }
+        else {
+            flag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
+        }
+
+        u8* bytes = packet.Serialize();
+        size_t size = packet.get_size();
+        ENetPacket* enet_packet = enet_packet_create(bytes, size, flag);
+
+        enet_peer_send(dest, channel, enet_packet);
+    }
+
+    /*
+     * Broadcast packet to all clients.
+     */
+    void Server::_broadcast_packet_immediate(const Packet& packet, bool reliable, u8 channel) {
+        size_t flag = 0;
+
+        if (reliable) {
+            flag = ENET_PACKET_FLAG_RELIABLE;
+        }
+        else {
+            flag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
+        }
+
+        u8* bytes = packet.Serialize();
+        size_t size = packet.get_size();
+        ENetPacket* enet_packet = enet_packet_create(bytes, size, flag);
+
+        for (const ClientInfo& client : this->clients) {
+            enet_peer_send(client.peer, channel, enet_packet);
+        }
     }
 }

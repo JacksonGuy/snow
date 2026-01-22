@@ -14,7 +14,7 @@ namespace snow {
             static constexpr char default_uuid[] = "00000000-0000-0000-0000-000000000000";
 
             char uuid[_UUID_SIZE];
-            u64 size;
+            size_t size;
             std::unique_ptr<u8> data;
 
             Packet();
@@ -25,10 +25,8 @@ namespace snow {
             Packet(ENetEvent* event);
             ~Packet();
 
-            u64 get_size() const noexcept;
+            size_t get_size() const noexcept;
             u8* Serialize() const override;
             bool Deserialize(const u8* buffer) override;
     };
-
-    void send_packet(ENetPeer* to, const Packet& packet, bool reliable, int channel);
 }
