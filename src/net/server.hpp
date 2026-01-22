@@ -1,6 +1,5 @@
 #pragma once
 
-#include <mutex>
 #include <unordered_map>
 #include <vector>
 #include <queue>
@@ -64,6 +63,8 @@ namespace snow {
             std::vector<ClientInfo> clients;
 
             // Message between client and server
+            // NOTE: using std::queue here might become an
+            // issue in the future.
             std::queue<Message> incoming_messages;
             std::queue<QueuePacket> outgoing_messages;
 

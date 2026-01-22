@@ -1,11 +1,9 @@
 #pragma once
 
-#include <sstream>
 #include <string>
 #include <stdint.h>
 #include <cstdarg>
 #include <cstdio>
-#include <thread>
 
 typedef float       f32;
 typedef double      f64;

@@ -1,11 +1,8 @@
 #include <iostream>
-#include <thread>
 #include <cassert>
 
 #include "core/utils.hpp"
 #include "net/server.hpp"
-
-#include "enet/enet.h"
 
 int main(int argc, char* argv[]) {
     using namespace snow;

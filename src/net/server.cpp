@@ -42,7 +42,7 @@ namespace snow {
      */
     void Server::init() {
         if (enet_initialize() != 0) {
-            debug_error("Failed to initialize ENet");
+            debug_error("Failed to initialize ENet.");
             exit(EXIT_FAILURE);
         }
 
