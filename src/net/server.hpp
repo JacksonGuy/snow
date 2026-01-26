@@ -4,6 +4,7 @@
 #include <vector>
 #include <queue>
 #include <functional>
+#include <optional>
 
 #include "enet/enet.h"
 
@@ -11,6 +12,9 @@
 #include "net/packet.hpp"
 
 namespace snow {
+    const u8 _CHANNEL_RELIABLE = 0;
+    const u8 _CHANNEL_UNRELIABLE = 1;
+
     typedef struct {
         std::string uuid;
         ENetPeer* peer;
@@ -44,12 +48,11 @@ namespace snow {
             );
             void send_packet(const Packet& packet, ENetPeer* dest, bool reliable, u8 channel);
             void broadcast_packet(const Packet& packet, bool reliable, u8 channel);
+            Message* read_packet();
 
         private:
-            static const u8 _CHANNEL_RELIABLE = 0;
-            static const u8 _CHANNEL_UNRELIABLE = 1;
-
             ENetHost* host;
+            Message message_cache;
 
             // User function pointers
             std::function<void(Server&)> _user_loop;
@@ -57,7 +60,7 @@ namespace snow {
             std::function<void(Server&, ENetEvent&)> _user_disconnect_callback;
 
             // Client lookup
-            std::unordered_map<char*, ENetPeer*> client_lookup;
+            std::unordered_map<std::string, ENetPeer*> client_lookup;
 
             // Client list
             std::vector<ClientInfo> clients;

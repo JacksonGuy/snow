@@ -18,6 +18,7 @@ set(SOURCE_FILES
     src/core/utils.cpp
     src/net/packet.cpp
     src/net/server.cpp
+    src/net/client.cpp
 )
 add_executable(main ${SOURCE_FILES})
 

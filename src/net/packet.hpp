@@ -15,7 +15,7 @@ namespace snow {
 
             char uuid[_UUID_SIZE];
             size_t size;
-            std::unique_ptr<u8> data;
+            std::unique_ptr<u8[]> data;
 
             Packet();
             Packet(const Packet& packet);

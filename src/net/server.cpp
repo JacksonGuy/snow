@@ -1,5 +1,6 @@
 #include <chrono>
 #include <cstdlib>
+#include <iostream>
 #include <thread>
 #include <functional>
 #include <cstring>
@@ -23,7 +24,7 @@ namespace snow {
     }
 
     Server::~Server() {
-        debug_log("Stopping server...");
+        debug_log("[SERVER] Stopping server...");
 
         // Disconnect clients
         for (const ClientInfo& client : this->clients) {
@@ -42,7 +43,7 @@ namespace snow {
      */
     void Server::init() {
         if (enet_initialize() != 0) {
-            debug_error("Failed to initialize ENet.");
+            debug_error("[SERVER] Failed to initialize ENet.");
             exit(EXIT_FAILURE);
         }
 
@@ -93,16 +94,18 @@ namespace snow {
             {
                 case ENET_EVENT_TYPE_CONNECT:
                 {
-                    debug_log("New connection.");
+                    debug_log("[SERVER] New connection.");
 
                     bool result = true;
                     if (this->_user_connect_callback != nullptr) {
+                        debug_log("[SERVER] Calling user connect callback...");
                         result = this->_user_connect_callback(*this, event);
                     }
 
                     // Result value for callback determines if
                     // we continue allowing the client to connect.
                     if (result) {
+                        debug_log("[SERVER] Handling new connection...");
                         this->handle_new_connection(event);
                     }
 
@@ -111,14 +114,19 @@ namespace snow {
 
                 case ENET_EVENT_TYPE_RECEIVE:
                 {
-                    debug_log("Message received.");
+                    debug_log("[SERVER] Message received.");
 
                     Packet packet(&event);
 
                     // Client validation check
+                    auto peer_it = this->client_lookup.find(packet.uuid);
+                    if (peer_it == this->client_lookup.end()) {
+                        debug_error("[SERVER] Client with UUID %s does not exist.", packet.uuid);
+                        break;
+                    }
                     ENetPeer* peer = this->client_lookup[packet.uuid];
                     if (peer->connectID != event.peer->connectID) {
-                        debug_error("Client sent packet with incorrect UUID");
+                        debug_error("[SERVER] Client sent packet with incorrect UUID");
                         break;
                     }
 
@@ -133,7 +141,7 @@ namespace snow {
 
                 case ENET_EVENT_TYPE_DISCONNECT:
                 {
-                    debug_log("Client disconnected.");
+                    debug_log("[SERVER] Client disconnected.");
 
                     if (this->_user_disconnect_callback != nullptr) {
                         this->_user_disconnect_callback(*this, event);
@@ -165,11 +173,13 @@ namespace snow {
         // Send client their UUID
         Packet uuid_packet;
         strcpy(uuid_packet.uuid, client.uuid.data());
-        _send_packet_immediate(uuid_packet, client.peer, true, Server::_CHANNEL_RELIABLE);
+        _send_packet_immediate(uuid_packet, client.peer, true, snow::_CHANNEL_RELIABLE);
+        debug_log("[SERVER] UUID sent to client.");
 
         // Add client to server
-        this->clients.push_back(client);
         this->client_lookup[client.uuid.data()] = client.peer;
+        this->clients.push_back(client);
+        // this->client_lookup.insert(std::make_pair(client.uuid.data(), client.peer));
     }
 
     void Server::main_loop() {
@@ -186,12 +196,15 @@ namespace snow {
             }
             else if (time_since_last_tick > tick_time) {
                 u64 behind = time_since_last_tick - tick_time;
-                debug_warn("Server ran %llu ms behind", behind);
+                debug_warn("[SERVER] Server ran %llu ms behind", behind);
             }
 
             last_tick_timestamp = get_local_timestamp();
 
+            debug_log("[SERVER] Polling Events...");
             this->poll_events();
+
+            debug_log("[SERVER] Running user loop...");
             this->_user_loop(*this);
 
             // Send out all queued packets
@@ -204,6 +217,8 @@ namespace snow {
                 else {
                     _broadcast_packet_immediate(message.packet, message.reliable, message.channel);
                 }
+
+                this->outgoing_messages.pop();
             }
         }
     }
@@ -219,12 +234,13 @@ namespace snow {
             if (it->peer->connectID == event.peer->connectID) {
                 this->client_lookup.erase(it->uuid.data());
                 this->clients.erase(it);
+                debug_log("[SERVER] Client successfully disconnected.");
                 return;
             }
         }
 
         if (!found) {
-            debug_error("Failed to disconnect client: client doesn't exist");
+            debug_error("[SERVER] Failed to disconnect client: client doesn't exist");
         }
     }
 
@@ -246,6 +262,16 @@ namespace snow {
         });
     }
 
+    Message* Server::read_packet() {
+        if (this->incoming_messages.empty()) {
+            return nullptr;
+        }
+
+        this->message_cache = std::move(this->incoming_messages.front());
+        this->incoming_messages.pop();
+        return &this->message_cache;
+    }
+
     /*
      * Send packet directly to client.
      */
@@ -264,6 +290,8 @@ namespace snow {
         ENetPacket* enet_packet = enet_packet_create(bytes, size, flag);
 
         enet_peer_send(dest, channel, enet_packet);
+
+        free(bytes);
     }
 
     /*
@@ -286,5 +314,7 @@ namespace snow {
         for (const ClientInfo& client : this->clients) {
             enet_peer_send(client.peer, channel, enet_packet);
         }
+
+        free(bytes);
     }
 }

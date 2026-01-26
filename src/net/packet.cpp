@@ -1,6 +1,7 @@
 #include <memory>
 #include <stdlib.h>
 #include <cstring>
+#include <iostream>
 
 #include "net/packet.hpp"
 #include "core/utils.hpp"
@@ -25,7 +26,7 @@ namespace snow {
         strcpy(this->uuid, packet.uuid);
         this->size = packet.size;
 
-        this->data = std::make_unique<u8>(this->size);
+        this->data = std::make_unique<u8[]>(this->size);
         memcpy(this->data.get(), packet.data.get(), this->size);
     }
 
@@ -48,7 +49,7 @@ namespace snow {
             strcpy(this->uuid, packet.uuid);
             this->size = packet.size;
 
-            this->data = std::make_unique<u8>(this->size);
+            this->data = std::make_unique<u8[]>(this->size);
             memcpy(this->data.get(), packet.data.get(), this->size);
         }
         return *this;
@@ -86,6 +87,8 @@ namespace snow {
 
     /*
      * Return the total size of the packet in bytes.
+     * This does NOT return the value of the internal size variable.
+     * This should only be used when serializing the packet.
      */
     u64 Packet::get_size() const noexcept {
         u64 size_total = 0;
@@ -113,7 +116,7 @@ namespace snow {
         offset += sizeof(this->size);
 
         if (this->data != nullptr && this->size > 0) {
-            memcpy(buffer + offset, this->data.get(), this->size);
+            memcpy((buffer + offset), this->data.get(), this->size);
         }
 
         return buffer;
@@ -140,35 +143,9 @@ namespace snow {
         }
 
         // Now we copy the data
-        this->data = std::make_unique<u8>(this->size);
+        this->data = std::make_unique<u8[]>(this->size);
         memcpy(this->data.get(), (buffer + offset), this->size);
 
         return true;
-    }
-
-    /**
-     * @brief Send a packet to a ENet destination.
-     *
-     * @param to peer the packet is sent to
-     * @param packet the packet to send
-     * @param reliable ensures packet is received by the peer
-     * @param channel channel to send packet on (0-255)
-     */
-    void send_packet(ENetPeer* to, const Packet& packet, bool reliable, u8 channel) {
-        size_t flag = 0;
-        if (reliable) {
-            flag = ENET_PACKET_FLAG_RELIABLE;
-        }
-        else {
-            flag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
-        }
-
-        u8* bytes = packet.Serialize();
-        size_t size = packet.get_size();
-
-        ENetPacket* enet_packet = enet_packet_create(bytes, size, flag);
-        enet_peer_send(to, channel, enet_packet);
-
-        free(bytes);
     }
 }

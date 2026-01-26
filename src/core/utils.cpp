@@ -33,7 +33,7 @@ namespace snow {
     }
 
     u64 deserialize_u64(const u8* buffer) {
-        return reinterpret_cast<u64>(buffer);
+        return ntohll(*(u64*)buffer);
     }
 
     /**
