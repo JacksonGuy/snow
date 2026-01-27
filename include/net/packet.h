@@ -5,17 +5,16 @@
 
 #include "enet/enet.h"
 
-#include "core/utils.hpp"
-#include "core/serializable.hpp"
+#include "core/utils.h"
 
 namespace snow {
-    class Packet : public Serializable {
+    class Packet {
         public:
             static constexpr char default_uuid[] = "00000000-0000-0000-0000-000000000000";
 
             char uuid[_UUID_SIZE];
             size_t size;
-            std::unique_ptr<u8[]> data;
+            std::unique_ptr<uint8_t[]> data;
 
             Packet();
             Packet(const Packet& packet);
@@ -26,7 +25,7 @@ namespace snow {
             ~Packet();
 
             size_t get_size() const noexcept;
-            u8* Serialize() const override;
-            bool Deserialize(const u8* buffer) override;
+            uint8_t* serialize() const;
+            bool deserialize(const uint8_t* buffer);
     };
 }

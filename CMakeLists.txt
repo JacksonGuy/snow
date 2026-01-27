@@ -46,5 +46,6 @@ target_link_libraries(main
 target_include_directories(main
     PRIVATE
         src
+        include
         extern/enet/include
 )

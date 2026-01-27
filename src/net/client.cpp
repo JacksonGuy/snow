@@ -3,21 +3,21 @@
 
 #include "enet/enet.h"
 
-#include "net/client.hpp"
-#include "core/utils.hpp"
+#include "net/client.h"
+#include "core/utils.h"
 
 namespace snow {
     Client::Client() {
-        this->connection = nullptr;
-        this->server = nullptr;
-        this->uuid = Packet::default_uuid;
+        this->m_connection = nullptr;
+        this->m_server = nullptr;
+        this->m_uuid = Packet::default_uuid;
     }
 
     Client::~Client() {
-        enet_host_destroy(this->connection);
+        enet_host_destroy(this->m_connection);
     }
 
-    bool Client::connect_to_server(const char* ip, u16 port) {
+    bool Client::connect_to_server(const char* ip, uint16_t port) {
         if (enet_initialize() != 0) {
             debug_error("Failed to initialize ENet.");
             return false;
@@ -29,14 +29,14 @@ namespace snow {
         address.port = port;
 
         // Create local ENet host
-        this->connection = enet_host_create(
+        this->m_connection = enet_host_create(
             nullptr,        // Address
             1,              // Peer count
             0,              // Channel Limit
             0,              // Incoming bandwidth
             0               // Outgoing bandwidth
         );
-        if (this->connection == nullptr) {
+        if (this->m_connection == nullptr) {
             debug_error("Failed to create local connection.");
             return false;
         }
@@ -44,13 +44,13 @@ namespace snow {
 
         // Connect to server
         enet_address_set_host(&address, ip);
-        this->server = enet_host_connect(
-            this->connection,                       // Host
+        this->m_server = enet_host_connect(
+            this->m_connection,                       // Host
             &address,                               // Server address
             ENET_PROTOCOL_MAXIMUM_CHANNEL_COUNT,    // Channel count
             0                                       // Data
         );
-        if (this->server == nullptr) {
+        if (this->m_server == nullptr) {
             debug_error("Failed to connect to server.");
             return false;
         }
@@ -58,20 +58,20 @@ namespace snow {
 
         // Listen for connect packet
         bool connection_packet = false;
-        u8 connect_attempts = 0;
+        uint8_t connect_attempts = 0;
         while (1) {
             if (connect_attempts >= 6) {
                 break;
             }
 
-            if ((enet_host_service(this->connection, &event, 5000) > 0)) {
+            if ((enet_host_service(this->m_connection, &event, 5000) > 0)) {
                 connection_packet = true;
                 break;
             }
         }
         if (!connection_packet) {
             debug_error("Connection failed: Did not receive connect packet");
-            enet_peer_reset(this->server);
+            enet_peer_reset(this->m_server);
             return false;
         }
         debug_log("[CLIENT] Connection packet received.");
@@ -79,19 +79,19 @@ namespace snow {
         // Get UUID from server
         debug_log("[CLIENT] Waiting for UUID...");
         bool uuid_packet = false;
-        u8 uuid_attempts = 0;
+        uint8_t uuid_attempts = 0;
         while (1) {
             if (uuid_attempts > 12) {
                 break;
             }
 
-            if (enet_host_service(this->connection, &event, 5000) > 0) {
+            if (enet_host_service(this->m_connection, &event, 5000) > 0) {
                 Packet packet(&event);
 
                 // Extra (probably useless) check to ensure
                 // we are looking at the correct packet.
                 if (packet.size == 0) {
-                    this->uuid = packet.uuid;
+                    this->m_uuid = packet.uuid;
                     uuid_packet = true;
                     break;
                 }
@@ -99,11 +99,11 @@ namespace snow {
         }
         if (!uuid_packet) {
             debug_error("Connection failed: Did not receive UUID from server");
-            enet_peer_reset(this->server);
+            enet_peer_reset(this->m_server);
             return false;
         }
 
-        debug_log("[CLIENT] UUID Received: %s", this->uuid.c_str());
+        debug_log("[CLIENT] UUID Received: %s", this->m_uuid.c_str());
 
         return true;
     }
@@ -111,7 +111,7 @@ namespace snow {
     void Client::poll_events(std::function<void(ENetEvent&)> user_callback) {
         ENetEvent event;
 
-        while (enet_host_service(this->connection, &event, 0) > 0) {
+        while (enet_host_service(this->m_connection, &event, 0) > 0) {
             switch (event.type)
             {
                 case ENET_EVENT_TYPE_RECEIVE:
@@ -126,8 +126,8 @@ namespace snow {
                 case ENET_EVENT_TYPE_DISCONNECT:
                 {
                     // Destroy ENET objects and force exit
-                    enet_peer_reset(this->server);
-                    enet_host_destroy(this->connection);
+                    enet_peer_reset(this->m_server);
+                    enet_host_destroy(this->m_connection);
                     exit(EXIT_SUCCESS);
 
                     break;
@@ -141,7 +141,7 @@ namespace snow {
         }
     }
 
-    void Client::send_packet(const Packet& packet, bool reliable, u8 channel) {
+    void Client::send_packet(const Packet& packet, bool reliable, uint8_t channel) {
         size_t flag = 0;
 
         if (reliable) {
@@ -151,16 +151,16 @@ namespace snow {
             flag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
         }
 
-        u8* bytes = packet.Serialize();
+        uint8_t* bytes = packet.serialize();
         size_t size = packet.get_size();
         ENetPacket* enet_packet = enet_packet_create(bytes, size, flag);
 
-        enet_peer_send(this->server, channel, enet_packet);
+        enet_peer_send(this->m_server, channel, enet_packet);
 
         free(bytes);
     }
 
     const std::string& Client::get_uuid() const {
-        return this->uuid;
+        return this->m_uuid;
     }
 }

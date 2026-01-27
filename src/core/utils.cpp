@@ -7,33 +7,33 @@
 #include <chrono>
 #include <random>
 
-#include "core/utils.hpp"
+#include "core/utils.h"
 
 namespace snow {
-    void serialize_f32(u8* buffer, f32 value) {
-        u32 as_int;
-        memcpy(&as_int, &value, sizeof(f32));
+    void serialize_float(uint8_t* buffer, float value) {
+        uint32_t as_int;
+        memcpy(&as_int, &value, sizeof(float));
         as_int = htonl(as_int);
-        memcpy(buffer, &as_int, sizeof(u32));
+        memcpy(buffer, &as_int, sizeof(uint32_t));
     }
 
-    f32 deserialize_float(const u8* buffer) {
-        u32 as_int;
-        memcpy(&as_int, buffer, sizeof(u32));
+    float deserialize_float(const uint8_t* buffer) {
+        uint32_t as_int;
+        memcpy(&as_int, buffer, sizeof(uint32_t));
 
         as_int = ntohl(as_int);
 
-        f32 value;
-        memcpy(&value, &as_int, sizeof(f32));
+        float value;
+        memcpy(&value, &as_int, sizeof(float));
         return value;
     }
 
-    void serialize_u64(u8* buffer, u64 value) {
-        *(u64*)buffer = htonll(value);
+    void serialize_uint64_t(uint8_t* buffer, uint64_t value) {
+        *(uint64_t*)buffer = htonll(value);
     }
 
-    u64 deserialize_u64(const u8* buffer) {
-        return ntohll(*(u64*)buffer);
+    uint64_t deserialize_uint64_t(const uint8_t* buffer) {
+        return ntohll(*(uint64_t*)buffer);
     }
 
     /**
@@ -43,7 +43,7 @@ namespace snow {
      * function at the same time are not guaranteed to return
      * the same value. Only use for local measurements!
      */
-    u64 get_local_timestamp() {
+    uint64_t get_local_timestamp() {
         const auto clock = std::chrono::system_clock::now();
         return std::chrono::duration_cast<std::chrono::milliseconds>(
             clock.time_since_epoch()).count();
@@ -73,22 +73,22 @@ namespace snow {
     /**
      * 64-bit host to network
      */
-    u64 htonll(u64 value) {
+    uint64_t htonll(uint64_t value) {
         #if __BIG_ENDIAN__
             return value;
         #else
-            return (u64)htonl((u32)(value >> 32)) | (u64)htonl((u32)(value & 0xFFFFFFFF)) << 32;
+            return (uint64_t)htonl((uint32_t)(value >> 32)) | (uint64_t)htonl((uint32_t)(value & 0xFFFFFFFF)) << 32;
         #endif
     }
 
     /**
      * 64-bit network to host
      */
-    u64 ntohll(u64 value) {
+    uint64_t ntohll(uint64_t value) {
         #if __BIG_ENDIAN__
             return value;
         #else
-            return (u64)ntohl((u32)(value >> 32)) | (u64)ntohl((u32)(value & 0xFFFFFFFF)) << 32;
+            return (uint64_t)ntohl((uint32_t)(value >> 32)) | (uint64_t)ntohl((uint32_t)(value & 0xFFFFFFFF)) << 32;
         #endif
     }
 }

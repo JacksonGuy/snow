@@ -6,10 +6,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "core/utils.hpp"
-#include "net/server.hpp"
-#include "net/client.hpp"
-#include "net/packet.hpp"
+#include "core/utils.h"
+#include "net/server.h"
+#include "net/client.h"
+#include "net/packet.h"
 
 int main(int argc, char* argv[]) {
     using namespace snow;
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
                 Packet packet;
                 strcpy(packet.uuid, client.get_uuid().c_str());
                 packet.size = message.size() + 1;
-                packet.data = std::make_unique<u8[]>(packet.size);
+                packet.data = std::make_unique<uint8_t[]>(packet.size);
                 memcpy(packet.data.get(), message.data(), packet.size);
 
                 client.send_packet(packet, true, snow::_CHANNEL_RELIABLE);

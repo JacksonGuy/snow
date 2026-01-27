@@ -3,9 +3,10 @@
 #include <cstring>
 #include <iostream>
 
-#include "net/packet.hpp"
-#include "core/utils.hpp"
 #include "enet/enet.h"
+
+#include "net/packet.h"
+#include "core/utils.h"
 
 namespace snow {
     /*
@@ -26,7 +27,7 @@ namespace snow {
         strcpy(this->uuid, packet.uuid);
         this->size = packet.size;
 
-        this->data = std::make_unique<u8[]>(this->size);
+        this->data = std::make_unique<uint8_t[]>(this->size);
         memcpy(this->data.get(), packet.data.get(), this->size);
     }
 
@@ -49,7 +50,7 @@ namespace snow {
             strcpy(this->uuid, packet.uuid);
             this->size = packet.size;
 
-            this->data = std::make_unique<u8[]>(this->size);
+            this->data = std::make_unique<uint8_t[]>(this->size);
             memcpy(this->data.get(), packet.data.get(), this->size);
         }
         return *this;
@@ -73,11 +74,11 @@ namespace snow {
      * Construct packet from ENet event.
      */
     Packet::Packet(ENetEvent* event) {
-        u8* bytes = (u8*)event->packet->data;
+        uint8_t* bytes = (uint8_t*)event->packet->data;
         size_t size = event->packet->dataLength;
 
         if (size <= 0) return;
-        this->Deserialize(bytes);
+        this->deserialize(bytes);
     }
 
     /*
@@ -90,8 +91,8 @@ namespace snow {
      * This does NOT return the value of the internal size variable.
      * This should only be used when serializing the packet.
      */
-    u64 Packet::get_size() const noexcept {
-        u64 size_total = 0;
+    uint64_t Packet::get_size() const noexcept {
+        uint64_t size_total = 0;
 
         size_total += _UUID_SIZE;
         size_total += sizeof(this->size);
@@ -104,15 +105,15 @@ namespace snow {
     /*
      * Serializes the packet contents into a byte array.
      */
-    u8* Packet::Serialize() const {
-        u64 size_total = this->get_size();
-        u8* buffer = (u8*)malloc(size_total);
-        u64 offset = 0;
+    uint8_t* Packet::serialize() const {
+        uint64_t size_total = this->get_size();
+        uint8_t* buffer = (uint8_t*)malloc(size_total);
+        uint64_t offset = 0;
 
         memcpy((char*)buffer, this->uuid, _UUID_SIZE);
         offset += _UUID_SIZE;
 
-        serialize_u64(buffer + offset, this->size);
+        serialize_uint64_t(buffer + offset, this->size);
         offset += sizeof(this->size);
 
         if (this->data != nullptr && this->size > 0) {
@@ -126,15 +127,15 @@ namespace snow {
      * Deserialize the given byte array into the packet object.
      * Modifies the current packet object.
      */
-    bool Packet::Deserialize(const u8* buffer) {
-        u64 offset = 0;
+    bool Packet::deserialize(const uint8_t* buffer) {
+        uint64_t offset = 0;
 
         // UUID
         memcpy(this->uuid, buffer, _UUID_SIZE);
         offset += _UUID_SIZE;
 
         // Size
-        this->size = deserialize_u64(buffer + offset);
+        this->size = deserialize_uint64_t(buffer + offset);
         offset += sizeof(this->size);
 
         // Free any data currently being stored
@@ -143,7 +144,7 @@ namespace snow {
         }
 
         // Now we copy the data
-        this->data = std::make_unique<u8[]>(this->size);
+        this->data = std::make_unique<uint8_t[]>(this->size);
         memcpy(this->data.get(), (buffer + offset), this->size);
 
         return true;

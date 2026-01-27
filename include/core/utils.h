@@ -5,30 +5,19 @@
 #include <cstdarg>
 #include <cstdio>
 
-typedef float       f32;
-typedef double      f64;
-typedef uint8_t     u8;
-typedef uint16_t    u16;
-typedef uint32_t    u32;
-typedef uint64_t    u64;
-typedef int8_t      i8;
-typedef int16_t     i16;
-typedef int32_t     i32;
-typedef int64_t     i64;
-
 namespace snow {
     // 36 characters plus null terminator
-    constexpr u32 _UUID_SIZE = 37;
+    constexpr uint32_t _UUID_SIZE = 37;
 
-    void serialize_f32(u8* buffer, f32 value);
-    f32 deserialize_f32(const u8* buffer);
-    void serialize_u64(u8* buffer, u64 value);
-    u64 deserialize_u64(const u8* buffer);
+    void serialize_float(uint8_t* buffer, float value);
+    float deserialize_float(const uint8_t* buffer);
+    void serialize_uint64_t(uint8_t* buffer, uint64_t value);
+    uint64_t deserialize_uint64_t(const uint8_t* buffer);
 
-    u64 htonll(u64 value);
-    u64 ntohll(u64 value);
+    uint64_t htonll(uint64_t value);
+    uint64_t ntohll(uint64_t value);
 
-    u64 get_local_timestamp();
+    uint64_t get_local_timestamp();
     std::string generate_uuid();
 
     inline void debug_log_impl(
